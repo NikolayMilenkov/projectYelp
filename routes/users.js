@@ -3,7 +3,14 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+   
+     var usersCollection = req.db.get('users');
+    usersCollection.find({})
+    .then(function(data) {
+        res.json(data);
+    }).catch(function(err) {
+        res.json(500, err);
+    });
 });
 
 module.exports = router;
