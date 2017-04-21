@@ -4,11 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('mongodb://niko:1234@ds139989.mlab.com:39989/project_x');
+
+
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+app.use(function(req, res, next){
+  req.db = db;
+  next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
