@@ -16,7 +16,7 @@ var users = require('./routes/users');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var sha1 = require('sha1');
-var cors = require('cors');
+//var cors = require('cors');
 
 var app = express();
 
@@ -25,9 +25,9 @@ app.use(function(req, res, next){
   next();
 });
 
-app.use(cors({origin: '*'}));
+//app.use(cors({origin: '*'}));
 
-/*app.use(function (req, res, next) {
+app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -45,7 +45,7 @@ app.use(cors({origin: '*'}));
     // Pass to next layer of middleware
     next();
 });
-*/
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
