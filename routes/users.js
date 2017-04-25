@@ -32,7 +32,7 @@ router.post('/', function(req, res, next) {
     users.find({ username: username, pass: password })
         .then(function (data) {
             if (data.length > 0) {
-               // req.session.userId = data[0]._id;
+               req.session.userId = data[0]._id;
                res.end(JSON.stringify(bool));
             } else {
                 bool = false;

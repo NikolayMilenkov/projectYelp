@@ -20,7 +20,7 @@ var sha1 = require('sha1');
 
 var app = express();
 
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
   req.db = db;
   next();
 });
@@ -29,21 +29,21 @@ app.use(function(req, res, next){
 
 app.use(function (req, res, next) {
 
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin','https://projectxfront.herokuapp.com');
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'https://projectxfront.herokuapp.com');
 
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
 
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
 
-    // Pass to next layer of middleware
-    next();
+  // Pass to next layer of middleware
+  next();
 });
 
 // view engine setup
@@ -55,21 +55,38 @@ app.set('view engine', 'hbs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser("bulletproof"));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express({secret: "bulletproof"}))
+app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
 app.use('/', index);
 app.use('/users', users);
 
+app.use(session({
+  secret: 'bulletproof',
+  saveUninitialized: false,
+  resave: false,
+  store: new MongoStore({ url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x' })
+}));
+
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
+function requireLogin(req, res, next) {
+  if (req.session.userId != undefined) {
+    console.log(req.session.userId);
+    next();
+  } else {
+    res.status(401);
+    res.end();
+  }
+}
+
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
