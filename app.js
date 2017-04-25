@@ -59,7 +59,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser("bulletproof"));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
+app.use(express({ secret: "bulletproof"}));
 app.use('/', index);
 app.use('/users', users);
 
