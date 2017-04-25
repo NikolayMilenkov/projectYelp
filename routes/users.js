@@ -19,9 +19,13 @@ router.get('/', function(req, res, next) {
     });*/
     
 });
+
+
 router.post('/', function(req, res, next) {
      var bool = true;
     var username = req.body.username;
+   
+    console.log(req.body);
     var password = req.body.password;
     var db = req.db;
     var users = db.get('users');
