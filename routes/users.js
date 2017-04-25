@@ -35,7 +35,8 @@ router.post('/', function(req, res, next) {
                // req.session.userId = data[0]._id;
                res.end(JSON.stringify(bool));
             } else {
-                res.end("check failed!");
+                bool = false;
+                res.end(JSON.stringify(bool));
                 //res.render('login', { message: 'Are probvai pak moi chovek' });
             }
         });
