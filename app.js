@@ -1,4 +1,5 @@
 var express = require('express');
+var MongoStore = require('connect-mongostore')(express);
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -8,6 +9,7 @@ var session = require('express-session');
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('mongodb://niko:1234@ds139989.mlab.com:39989/project_x');
+
 
 
 
