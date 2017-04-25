@@ -15,7 +15,7 @@ var db = monk('mongodb://niko:1234@ds139989.mlab.com:39989/project_x');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var businessUsers = require('./routes/businessUsers');
+var createUsers = require('./routes/createUsers');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var sha1 = require('sha1');
@@ -63,7 +63,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express({ secret: "bulletproof"}));
 app.use('/', index);
 app.use('/users', users);
-app.use('/businessUsers', users);
+app.use('/createUsers', users);
 
 // app.use(session({
 //   secret: 'bulletproof',
