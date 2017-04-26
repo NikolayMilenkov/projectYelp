@@ -1,16 +1,19 @@
 var express = require('express');
-//var MongoStore = require('connect-mongostore')(express);
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('mongodb://niko:1234@ds139989.mlab.com:39989/project_x');
+var sha1 = require('sha1');
+var session = require('express-session');
+var MongoStore = require('connect-mongostore')(session);
 
+favicon("./public/Yico.ico", function (err, favicon_url) {
 
+});
 
 
 var index = require('./routes/index');
@@ -18,8 +21,8 @@ var users = require('./routes/users');
 var createUsers = require('./routes/createUsers');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
-var sha1 = require('sha1');
-//var cors = require('cors');
+
+
 
 var app = express();
 
@@ -28,7 +31,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-//app.use(cors({origin: '*'}));
 
 app.use(function (req, res, next) {
 
@@ -60,17 +62,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express({ secret: "bulletproof"}));
+app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
 app.use('/', index);
 app.use('/users', users);
 app.use('/createUsers', users);
 
-// app.use(session({
-//   secret: 'bulletproof',
-//   saveUninitialized: false,
-//   resave: false,
-//   store: new MongoStore({ url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x' })
-// }));
+app.use(session({
+  secret: 'bulletproof',
+  saveUninitialized: false,
+  resave: false,
+  store: new MongoStore({ db: "myDB", url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x' })
+}));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -79,15 +81,15 @@ app.use(function (req, res, next) {
   next(err);
 });
 
-// function requireLogin(req, res, next) {
-//   if (req.session.userId != undefined) {
-//     console.log(req.session.userId);
-//     next();
-//   } else {
-//     res.status(401);
-//     res.end();
-//   }
-// }
+function requireLogin(req, res, next) {
+  if (req.session.userId != undefined) {
+    console.log(req.session.userId);
+    next();
+  } else {
+    res.status(401);
+    res.end();
+  }
+}
 
 // error handler
 app.use(function (err, req, res, next) {
