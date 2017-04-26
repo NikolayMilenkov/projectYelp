@@ -33,11 +33,11 @@ router.post('/', function(req, res, next) {
         .then(function (data) {
             console.log(data);
             if (data.length > 0) {
-                req.session.userId = data[0]._id;
-               res.end(JSON.stringify(bool));
+             // req.session.userId = data[0]._id;
+               res.end(JSON.stringify({value:"true"}));
             } else {
                 bool = false;
-                res.end(JSON.stringify(bool));
+                res.end(JSON.stringify({value:"false"}));
                 //res.render('login', { message: 'Are probvai pak moi chovek' });
             }
         });
