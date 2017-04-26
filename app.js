@@ -35,7 +35,7 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
 
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'https://projectxfront.herokuapp.com');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -65,7 +65,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
 app.use('/', index);
 app.use('/users', users);
-app.use('/createUsers', users);
+app.use('/createUsers', createUsers);
 
 app.use(session({
   secret: 'bulletproof',
