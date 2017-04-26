@@ -9,10 +9,14 @@ var monk = require('monk');
 var db = monk('mongodb://niko:1234@ds139989.mlab.com:39989/project_x');
 var sha1 = require('sha1');
 var session = require('express-session');
-var MongoStore = require('connect-mongostore')(session);
+var MongoStore = require('connect-mongo')(session);
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://niko:1234@ds139989.mlab.com:39989/project_x');
+var dbMong = mongoose.connection;
+dbMong.on('error', console.error.bind(console, 'connection error:'));
 
 favicon("./public/Yico.ico", function (err, favicon_url) {
-
+  console.log("fav ico load fail");
 });
 
 
@@ -25,6 +29,34 @@ var logout = require('./routes/logout');
 
 
 var app = express();
+
+app.use(session({
+  secret: 'bulletproof',
+  saveUninitialized: false,
+  resave: false,
+  cookie: { maxAge: 300 * 1000 },
+  store: new MongoStore({
+    url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x',
+    ttl: 5 * 60 // = 5 minutes
+  })
+}));
+// app.use(session({
+//   store: new MongoStore({ mongooseConnection: mongoose.connection })
+// }));
+
+// app.use(cookieSession({
+//   name: 'session',
+//   secret: "bulletproof",
+//   // Cookie Options 
+//   maxAge: 5 * 60 * 1000
+// }));
+
+// app.use(session({
+//   secret: 'bulletproof',
+//   saveUninitialized: false,
+//   resave: false,
+//   store: new MongoStore({ db: "myDB", url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x' })
+// }));
 
 app.use(function (req, res, next) {
   req.db = db;
@@ -62,17 +94,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
+
+// app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/createUsers', createUsers);
 
-app.use(session({
-  secret: 'bulletproof',
-  saveUninitialized: false,
-  resave: false,
-  store: new MongoStore({ db: "myDB", url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x' })
-}));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -82,13 +110,17 @@ app.use(function (req, res, next) {
 });
 
 function requireLogin(req, res, next) {
-  if (req.session.userId != undefined) {
-    console.log(req.session.userId);
-    next();
-  } else {
-    res.status(401);
-    res.end();
-  }
+  var db = req.db;
+  var users = db.get('users');
+  users.find({ _id: req.session.userId }).then(function (data) {
+    if (data.length > 0) {
+      console.log(req.session.userId);
+      next();
+    } else {
+      res.status(401);
+      res.end();
+    }
+  });
 }
 
 // error handler

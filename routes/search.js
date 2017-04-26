@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/',function(req, res, next){
-    var usersCollection = req.db.get('businesses');
+    // var usersCollection = req.db.get('businesses');
     
 })
 module.exports = router;
