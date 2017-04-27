@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var sha1 = require('sha1');
 /* GET users listing. */
 router.get('/', function (req, res, next) {
 
@@ -20,9 +20,11 @@ router.post('/', function (req, res, next) {
     users.find({ username: username, password: password })
         .then(function (data) {
             if (data.length > 0) {
-                console.log(req.session);
+                //console.log(req.session);
                 req.session.userId = data[0]._id;
-                res.end(JSON.stringify({ value: "true" }));
+                var requestSes =  sha1(data[0]._id);
+             
+                res.end(JSON.stringify({ value: "true", user:  requestSes}));
             } else {
                 res.end(JSON.stringify({ value: "false" }));
             }
