@@ -1,6 +1,5 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -14,10 +13,6 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://niko:1234@ds139989.mlab.com:39989/project_x');
 var dbMong = mongoose.connection;
 dbMong.on('error', console.error.bind(console, 'connection error:'));
-
-favicon("./public/Yico.ico", function (err, favicon_url) {
-  console.log("fav ico load fail");
-});
 
 
 var index = require('./routes/index');
@@ -37,26 +32,8 @@ app.use(session({
   cookie: { maxAge: 300 * 1000 },
   store: new MongoStore({
     url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x',
-    ttl: 5 * 60 // = 5 minutes
   })
 }));
-// app.use(session({
-//   store: new MongoStore({ mongooseConnection: mongoose.connection })
-// }));
-
-// app.use(cookieSession({
-//   name: 'session',
-//   secret: "bulletproof",
-//   // Cookie Options 
-//   maxAge: 5 * 60 * 1000
-// }));
-
-// app.use(session({
-//   secret: 'bulletproof',
-//   saveUninitialized: false,
-//   resave: false,
-//   store: new MongoStore({ db: "myDB", url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x' })
-// }));
 
 app.use(function (req, res, next) {
   req.db = db;
@@ -97,9 +74,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
 
-app.use('/', index);
 app.use('/users', users);
 app.use('/createUsers', createUsers);
+app.use('/', requireLogin, index);
 
 
 // catch 404 and forward to error handler
@@ -110,17 +87,12 @@ app.use(function (req, res, next) {
 });
 
 function requireLogin(req, res, next) {
-  var db = req.db;
-  var users = db.get('users');
-  users.find({ _id: req.session.userId }).then(function (data) {
-    if (data.length > 0) {
-      console.log(req.session.userId);
-      next();
-    } else {
-      res.status(401);
-      res.end();
-    }
-  });
+  if (req.session.userId) {
+    next();
+  } else {
+    res.redirect("http://localhost:3001/#/login");
+    res.end();
+  }
 }
 
 // error handler

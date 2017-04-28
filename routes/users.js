@@ -20,11 +20,9 @@ router.post('/', function (req, res, next) {
     users.find({ username: username, password: password })
         .then(function (data) {
             if (data.length > 0) {
-                //console.log(req.session);
                 req.session.userId = data[0]._id;
-                var requestSes =  sha1(data[0]._id);
-             
-                res.end(JSON.stringify({ value: "true", user:  requestSes}));
+                console.log(req.session);
+                res.end(JSON.stringify({ value: "true", user: data[0]._id }));
             } else {
                 res.end(JSON.stringify({ value: "false" }));
             }
