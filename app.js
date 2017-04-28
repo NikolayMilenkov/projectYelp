@@ -74,9 +74,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
 
+app.use('/', index);
 app.use('/users', users);
 app.use('/createUsers', createUsers);
-app.use('/', requireLogin, index);
+
 
 
 // catch 404 and forward to error handler
@@ -86,14 +87,14 @@ app.use(function (req, res, next) {
   next(err);
 });
 
-function requireLogin(req, res, next) {
-  if (req.session.userId) {
-    next();
-  } else {
-    res.redirect("http://localhost:3001/#/login");
-    res.end();
-  }
-}
+// function requireLogin(req, res, next) {
+//   if (req.session.userId) {
+//     next();
+//   } else {
+//     res.redirect("http://localhost:3001/#/login");
+//     res.end();
+//   }
+// }
 
 // error handler
 app.use(function (err, req, res, next) {
