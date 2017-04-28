@@ -77,6 +77,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/createUsers', createUsers);
+app.use('/login', login);
 
 
 
