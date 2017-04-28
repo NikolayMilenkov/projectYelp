@@ -29,7 +29,7 @@ app.use(session({
   secret: 'bulletproof',
   saveUninitialized: false,
   resave: false,
-  cookie: { maxAge: 300 * 1000 },
+  cookie: { maxAge: 20 * 1000 },
   store: new MongoStore({
     url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x',
   })
@@ -77,7 +77,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/createUsers', createUsers);
-app.use('/login', login);logout
+app.use('/login', login);
 app.use('/logout', logout);
 
 

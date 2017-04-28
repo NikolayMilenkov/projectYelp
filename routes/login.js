@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
         res.end(JSON.stringify({value : "true"}));
     }
     else {
-        res.status(401);
+      
         res.end(JSON.stringify({value : "false"}))
     };
 });
