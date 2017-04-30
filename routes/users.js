@@ -22,6 +22,7 @@ router.post('/', function (req, res, next) {
             if (data.length > 0) {
                 req.session.userId = data[0]._id;
                 console.log(req.session);
+                console.log(req.body);
                 res.end(JSON.stringify({ value: "true", user: data[0]._id }));
             } else {
                 res.end(JSON.stringify({ value: "false" }));
