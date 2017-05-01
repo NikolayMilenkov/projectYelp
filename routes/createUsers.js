@@ -1,21 +1,29 @@
 var express = require('express');
 var router = express.Router();
+var sha1 = require('sha1');
 
-function CreateUser(username, password, email, type) {
+// new user consructor
+function UserObject(username, password, email, type) {
     this.username = username;
-    this.password = password;
     this.email = email;
     this.type = type;
 };
 
+function User(username, password) {
+    this.username = username;
+    this.password = password;
+}
+
 router.post('/', function (req, res, next) {
     var username = req.body.username;
-    var password = req.body.password;
+    var password = sha1(req.body.password);
     var email = req.body.email;
     var type = req.body.type;
-    var newUser = new CreateUser(username, password, email, type)
+    var newUser = new UserObject(username, email, type)
+    var newUserObject = new User(username, password);
     var db = req.db;
     var users = db.get('users');
+    var userObjects = db.get('userObjects');
     users.find({ username: username })
         .then(function (data) {
             if (data.length > 0) {
@@ -26,26 +34,18 @@ router.post('/', function (req, res, next) {
                     if (data.length > 0) {
                         res.end(JSON.stringify({ value: "false" }));
                     } else {
-                        users.insert(newUser).then(function () {
-                            users.find(newUser).then(function (result) {
+                        userObjects.insert(newUserObject).then(function () {
+                            userObjects.find(newUserObject).then(function (result) {
                                 req.session.userId = result[0]._id;
-                                console.log(req.session);
                             });
+                            
                         });
+                        users.insert(newUser);
                         res.end(JSON.stringify({ value: "true" }));
                     }
                 });
             }
         });
 });
-
-
-/*  usersCollection.find({})
-  .then(function(data) {
-      res.json(data);
-  }).catch(function(err) {
-      res.json(500, err);
-  });*/
-
 
 module.exports = router;

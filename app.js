@@ -16,7 +16,7 @@ dbMong.on('error', console.error.bind(console, 'connection error:'));
 
 
 var index = require('./routes/index');
-var users = require('./routes/users');
+var auth = require('./routes/auth');
 var createUsers = require('./routes/createUsers');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
@@ -29,7 +29,7 @@ app.use(session({
   secret: 'bulletproof',
   saveUninitialized: false,
   resave: false,
-  cookie: { maxAge: 20 * 1000 },
+  cookie: { maxAge: 300 * 1000 },
   store: new MongoStore({
     url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x',
   })
@@ -74,7 +74,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/auth', auth);
 app.use('/createUsers', createUsers);
 app.use('/login', login);
 app.use('/logout', logout);
