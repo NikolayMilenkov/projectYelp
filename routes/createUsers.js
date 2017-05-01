@@ -3,7 +3,7 @@ var router = express.Router();
 var sha1 = require('sha1');
 
 // new user consructor
-function UserObject(username, password, email, type) {
+function UserObject(username, email, type) {
     this.username = username;
     this.email = email;
     this.type = type;
