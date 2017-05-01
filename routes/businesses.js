@@ -1,3 +1,40 @@
+var express = require('express')
+var router = express.Router()
+
+router.get('/', function (req, res, next) {
+  res.render('index', { title: 'Express' })
+})
+
+function populateResult (data,array) {
+  data.forEach(function (element) {
+    array.push(element)
+  })
+}
+
+router.post('/', function (req, res, next) {
+  var result = []
+  var collectionRestaurants = req.db.get('restaurants')
+  var collectionShopping = req.db.get('shopping')
+  var collectionEntertainment = req.db.get('entertainment')
+  var searchResult = req.body.value
+
+  var search = new RegExp('/*' + searchResult + '/*', 'i')
+  var searchEngine = { $or: [{ name: { $regex: search } }, { tag: { $regex: search } }] }
+  collectionRestaurants.find(searchEngine, {})
+    .then(function (data) {
+      populateResult(data,result)
+      collectionShopping.find(searchEngine, {}).then(function (data) {
+        populateResult(data,result)
+        collectionEntertainment.find(searchEngine, {}).then(function (data) {
+          populateResult(data,result)
+          res.json(result)
+        })
+      })
+    }).catch(function (err) {
+    res.json(500, err)
+  })
+})
+
 router.post('/rest&shop', function (req, res, next) {
   var result = []
   var collectionRestaurants = req.db.get('restaurants')
@@ -9,14 +46,14 @@ router.post('/rest&shop', function (req, res, next) {
 
   collectionRestaurants.find(searchEngine, {})
     .then(function (data) {
-      populateResult(data, result);
+      populateResult(data,result);
       collectionShopping.find(searchEngine, {}).then(function (data) {
-        populateResult(data, result);
+        populateResult(data,result);
         res.json(result);
       })
     }).catch(function (err) {
-      res.json(500, err);
-    });
+    res.json(500, err);
+  });
 });
 
 router.post('/rest&enter', function (req, res, next) {
@@ -30,14 +67,14 @@ router.post('/rest&enter', function (req, res, next) {
 
   collectionRestaurants.find(searchEngine, {})
     .then(function (data) {
-      populateResult(data, result)
+      populateResult(data,result)
       collectionEntertainment.find(searchEngine, {}).then(function (data) {
-        populateResult(data, result)
+        populateResult(data,result)
         res.json(result);
       })
     }).catch(function (err) {
-      res.json(500, err);
-    });
+    res.json(500, err);
+  });
 });
 
 router.post('/shop&enter', function (req, res, next) {
@@ -51,14 +88,14 @@ router.post('/shop&enter', function (req, res, next) {
 
   collectionShopping.find(searchEngine, {})
     .then(function (data) {
-      populateResult(data, result)
+      populateResult(data,result)
       collectionEntertainment.find(searchEngine, {}).then(function (data) {
-        populateResult(data, result)
+        populateResult(data,result)
         res.json(result);
       })
     }).catch(function (err) {
-      res.json(500, err);
-    });
+    res.json(500, err);
+  });
 });
 
 router.post('/restaurants', function (req, res, next) {
@@ -73,8 +110,8 @@ router.post('/restaurants', function (req, res, next) {
       })
       res.json(result)
     }).catch(function (err) {
-      res.json(500, err)
-    })
+    res.json(500, err)
+  })
 })
 router.post('/shopping', function (req, res, next) {
   var result = []
@@ -88,8 +125,8 @@ router.post('/shopping', function (req, res, next) {
       })
       res.json(result)
     }).catch(function (err) {
-      res.json(500, err)
-    })
+    res.json(500, err)
+  })
 })
 router.post('/entertainment', function (req, res, next) {
   var result = []
@@ -105,8 +142,8 @@ router.post('/entertainment', function (req, res, next) {
       })
       res.json(result)
     }).catch(function (err) {
-      res.json(500, err)
-    })
+    res.json(500, err)
+  })
 })
 
 module.exports = router;
