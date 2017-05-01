@@ -40,7 +40,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-
 app.use(function (req, res, next) {
 
   // Website you wish to allow to connect
@@ -98,6 +97,32 @@ app.use(function (req, res, next) {
 //   }
 // }
 
+app.use(function (req, res, next) {
+  req.callMe = function (theCollection, theSearchResult, res) {
+    var collection = theCollection;
+    var searchResult = theSearchResult;
+    var search = new RegExp('/*' + searchResult + '*', 'i');
+    collection.find({ $or: [{ name: { $regex: search } }, { tag: { $regex: search } }] }, {})
+      .then(function (data) {
+        data.forEach(function (element) {
+          result.push(element);
+        });
+        console.log(result);
+        return new Promise(function (data) { 
+          console.log("Succes on the succes path.")
+        }, function (err) {
+          console.log("I am an error in the succes path.")
+        });
+      }).catch(function (err) {
+        return new Promise(function (data) { 
+          console.log("Success on the cath error path.")
+        }, function (err) {
+          console.log(" I am an error in the catch path.")
+        });
+      });
+  }
+  next();
+});
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
