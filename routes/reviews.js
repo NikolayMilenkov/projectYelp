@@ -13,9 +13,11 @@ router.post('/', function (req, res, next) {
     userObjects.find({ _id: userId }).then(function (data) {
         if (data.length > 0) {
             author = data[0].username;
-            objCollection.update({ _id: objectId }, { review: { $push: { text, author: author } } }).then(function (data) {
+            objCollection.update({ _id: objectId }, { $push: { reviews: { text, author: author } } }).then
+            (function (data) {
                 res.end(JSON.stringify({ value: "true" }));
-            }, function () { }).catch(function () { });
+            }, function (err) { 
+            }).catch(function () { });
         } else {
             res.end(JSON.stringify({ value: "false" }))
         }
