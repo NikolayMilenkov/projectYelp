@@ -14,7 +14,6 @@ function Obj(name, address, tag, phone, image, description, type) {
 }
 
 router.post('/', function (req, res, next) {
-  console.log("Pochnah q")
   var name = req.body.obj.name;
   var address = req.body.obj.address;
   var tag = req.body.obj.tag;
@@ -25,7 +24,6 @@ router.post('/', function (req, res, next) {
   var newObj = new Obj(name, address, tag, phone, image, description, type);
   var objCollection = db.get(type);
   objCollection.insert(newObj).then(function (data) {
-    console.log("Do tuka q dokarah");
     res.end(JSON.stringify({ value: "true", obj: data }));
   },function(){}).catch(function(){});
 });

@@ -11,11 +11,9 @@ router.post('/', function (req, res, next) {
     var userObjects = db.get('userObjects');
     var objCollection = db.get(collection);
     userObjects.find({ _id: userId }).then(function (data) {
-        console.log("review zaqvka otvorena");
         if (data.length > 0) {
             author = data[0].username;
             objCollection.update({ _id: objectId }, { review: { $push: { text, author: author } } }).then(function (data) {
-                console.log("updatenah");
                 res.end(JSON.stringify({ value: "true" }));
             }, function () { }).catch(function () { });
         } else {

@@ -66,15 +66,11 @@ app.use(function (req, res, next) {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use(express({ secret: "bulletproof", cookie: { maxAge: 300 * 1000 } }))
 
 app.use('/', index);
 app.use('/auth', auth);
@@ -93,41 +89,6 @@ app.use(function (req, res, next) {
   next(err);
 });
 
-// function requireLogin(req, res, next) {
-//   if (req.session.userId) {
-//     next();
-//   } else {
-//     res.redirect("http://localhost:3001/#/login");
-//     res.end();
-//   }
-// }
-
-app.use(function (req, res, next) {
-  req.callMe = function (theCollection, theSearchResult, res) {
-    var collection = theCollection;
-    var searchResult = theSearchResult;
-    var search = new RegExp('/*' + searchResult + '*', 'i');
-    collection.find({ $or: [{ name: { $regex: search } }, { tag: { $regex: search } }] }, {})
-      .then(function (data) {
-        data.forEach(function (element) {
-          result.push(element);
-        });
-        console.log(result);
-        return new Promise(function (data) {
-          console.log("Succes on the succes path.")
-        }, function (err) {
-          console.log("I am an error in the succes path.")
-        });
-      }).catch(function (err) {
-        return new Promise(function (data) {
-          console.log("Success on the cath error path.")
-        }, function (err) {
-          console.log(" I am an error in the catch path.")
-        });
-      });
-  }
-  next();
-});
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

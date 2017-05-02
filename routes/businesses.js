@@ -132,9 +132,7 @@ router.post('/entertainment', function (req, res, next) {
   var result = []
   var entertainmentCollection = req.db.get('entertainment');
   var searchResult = req.body.value;
-  console.log("searchenter " + searchResult);
   var search = new RegExp('/*' + searchResult + '/*', 'i');
-  console.log("search " + search);
   entertainmentCollection.find({ $or: [{ name: { $regex: search } }, { tag: { $regex: search } }] }, {})
     .then(function (data) {
       data.forEach(function (element) {
