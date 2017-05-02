@@ -21,6 +21,7 @@ var createUsers = require('./routes/createUsers');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var businesses = require('./routes/businesses');
+var options = require('./routes/options');
 
 
 var app = express();
@@ -79,6 +80,7 @@ app.use('/createUsers', createUsers);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/businesses', businesses);
+app.use('/options', options);
 
 
 // catch 404 and forward to error handler

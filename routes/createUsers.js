@@ -24,24 +24,30 @@ router.post('/', function (req, res, next) {
     var db = req.db;
     var users = db.get('users');
     var userObjects = db.get('userObjects');
+    var theId = "";
     users.find({ username: username })
         .then(function (data) {
             if (data.length > 0) {
                 res.end(JSON.stringify({ value: "false" }));
             } else {
                 users.find({ email: email }).then(function (data) {
-                    console.log("user = " + newUser);
+                    console.log(data);
                     if (data.length > 0) {
+                        console.log("kofti trupka");
                         res.end(JSON.stringify({ value: "false" }));
                     } else {
+                        console.log("Chak do tuka stignah");
                         userObjects.insert(newUserObject).then(function () {
+                            console.log("I ot tuka minah");
                             userObjects.find(newUserObject).then(function (result) {
+                                theId = result[0]._id;
                                 req.session.userId = result[0]._id;
+                                users.insert(newUser).then(function () {
+                                    console.log("stignah do tuka");
+                                    res.end(JSON.stringify({ value: "true", user: theId }));
+                                });
                             });
-                            
                         });
-                        users.insert(newUser);
-                        res.end(JSON.stringify({ value: "true" }));
                     }
                 });
             }
