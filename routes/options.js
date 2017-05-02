@@ -11,7 +11,7 @@ router.post('/', function (req, res, next) {
         .then(function (data) {
             if (data.length > 0) {
                 if (data[0].password == password) {
-                    res.end(JSON.stringify({ value: "true" }))
+                    res.end(JSON.stringify({ value: "true" }));
                 } else {
                     res.end(JSON.stringify({ value: "false" }));
                 }
@@ -36,7 +36,7 @@ router.post('/newUser', function (req, res, next) {
                 oldUsername = data[0].username;
                 userObjects.update({ username: oldUsername }, { $set: { username: username } }).then(function (data) {
                     users.update({ username: oldUsername }, { $set: { username: username } }).then(function (data) {
-                        res.end(JSON.stringify({ value: "true" }))
+                        res.end(JSON.stringify({ value: "true" }));
                     });
                 });
             } else {

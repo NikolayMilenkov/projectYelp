@@ -18,10 +18,10 @@ router.post('/', function (req, res, next) {
                     res.end(JSON.stringify({ value: "true" }));
                 }, function (err) {
                 }).catch(function (err) {
-                    res.json(500, err)
+                    res.json(500, err);
                 })
         } else {
-            res.end(JSON.stringify({ value: "false" }))
+            res.end(JSON.stringify({ value: "false" }));
         }
     }).catch(function (err) {
         res.json(500, err);
