@@ -22,6 +22,8 @@ var login = require('./routes/login');
 var logout = require('./routes/logout');
 var businesses = require('./routes/businesses');
 var options = require('./routes/options');
+var reviews = require('./routes/reviews');
+var createObject = require('./routes/createObject');
 
 
 var app = express();
@@ -81,7 +83,8 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/businesses', businesses);
 app.use('/options', options);
-
+app.use('/reviews', reviews);
+app.use('/createObject', createObject);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -110,13 +113,13 @@ app.use(function (req, res, next) {
           result.push(element);
         });
         console.log(result);
-        return new Promise(function (data) { 
+        return new Promise(function (data) {
           console.log("Succes on the succes path.")
         }, function (err) {
           console.log("I am an error in the succes path.")
         });
       }).catch(function (err) {
-        return new Promise(function (data) { 
+        return new Promise(function (data) {
           console.log("Success on the cath error path.")
         }, function (err) {
           console.log(" I am an error in the catch path.")
