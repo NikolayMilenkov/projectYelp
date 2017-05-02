@@ -14,14 +14,18 @@ router.post('/', function (req, res, next) {
         if (data.length > 0) {
             author = data[0].username;
             objCollection.update({ _id: objectId }, { $push: { reviews: { text, author: author } } }).then
-            (function (data) {
-                res.end(JSON.stringify({ value: "true" }));
-            }, function (err) { 
-            }).catch(function () { });
+                (function (data) {
+                    res.end(JSON.stringify({ value: "true" }));
+                }, function (err) {
+                }).catch(function (err) {
+                    res.json(500, err)
+                })
         } else {
             res.end(JSON.stringify({ value: "false" }))
         }
-    }, function () { }).catch(function () { });
+    }).catch(function (err) {
+        res.json(500, err);
+    })
 });
 
 module.exports = router;

@@ -78,6 +78,8 @@ router.post('/newEmail', function (req, res, next) {
                 oldUsername = data[0].username;
                 users.update({ username: oldUsername }, { $set: { email: email } }).then(function (data) {
                     res.end(JSON.stringify({ value: "true" }))
+                }).catch(function (err) {
+                    res.json(500, err);
                 });
             } else {
                 res.end(JSON.stringify({ value: "false" }));

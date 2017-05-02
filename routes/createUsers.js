@@ -19,7 +19,7 @@ router.post('/', function (req, res, next) {
     var password = sha1(req.body.password);
     var email = req.body.email;
     var type = req.body.type;
-    var newUser = new UserObject(username, email, type)
+    var newUser = new UserObject(username, email, type);
     var newUserObject = new User(username, password);
     var db = req.db;
     var users = db.get('users');
@@ -34,7 +34,7 @@ router.post('/', function (req, res, next) {
                     if (data.length > 0) {
                         res.end(JSON.stringify({ value: "false" }));
                     } else {
-                        userObjects.insert(newUserObject).then(function () {
+                        userObjects.insert(newUserObject).then(function (data) {
                             userObjects.find(newUserObject).then(function (result) {
                                 theId = result[0]._id;
                                 req.session.userId = result[0]._id;
