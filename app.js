@@ -31,7 +31,7 @@ app.use(session({
     secret: 'bulletproof',
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: 30 * 1000 },
+    cookie: { maxAge: 3000 * 1000 },
     store: new MongoStore({
         url: 'mongodb://niko:1234@ds139989.mlab.com:39989/project_x',
     })
